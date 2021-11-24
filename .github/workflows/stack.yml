@@ -1,0 +1,25 @@
+name: Refresh containers in Portainer
+
+on:
+  workflow_run:
+    workflows: ["Beta autodeploy action", "Stable autodeploy action"]
+    types: [completed]
+
+jobs:
+  successful-build:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Deploy stack to Portainer
+      uses: DaniFoldi/portainer-stack-deploy@v1.2
+      with:
+        portainer-host: ${{ secrets.PORTAINER_HOST }}
+        username: ${{ secrets.PORTAINER_USERNAME }}
+        password: ${{ secrets.PORTAINER_KEY }}
+        endpoint-id: ${{ secrets.PORTAINER_ENDPOINT }}
+        stack-name: <STACK_NAME>
+        stack-definition: docker-compose.yml

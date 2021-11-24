@@ -1,0 +1,39 @@
+version: '3.7'
+
+networks:
+  <NETWORK_NAME>:
+    external: true
+
+services:
+  <SERVICE>:
+    image: ghcr.io/<CONTAINER_NAME>:stable
+    restart: always
+    container_name: <SERVICE>
+    environment:
+      NODE_ENV: production
+    networks:
+      - <NETWORK_NAME>
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.<SERVICE>.rule=Host(`<DOMAIN>`) || Host(`www.<DOMAIN>`)
+      - traefik.http.routers.<SERVICE>.entrypoints=https
+      - traefik.http.routers.<SERVICE>.tls.certresolver=cloudflare
+      - traefik.http.routers.<SERVICE>.service=<SERVICE>
+      - traefik.http.routers.<SERVICE>.middlewares=cloudflare-ip-whitelist
+      - traefik.http.services.<SERVICE>.loadbalancer.server.port=80
+  <SERVICE>-beta:
+    image: ghcr.io/<CONTAINER_NAME>:latest
+    restart: unless-stopped
+    container_name: <SERVICE>-beta
+    environment:
+      DEBUG: *
+    networks:
+      - <NETWORK_NAME>
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.<SERVICE>-beta.rule=Host(`beta.<DOMAIN>`)
+      - traefik.http.routers.<SERVICE>-beta.entrypoints=https
+      - traefik.http.routers.<SERVICE>-beta.tls.certresolver=cloudflare
+      - traefik.http.routers.<SERVICE>-beta.service=<SERVICE>-beta
+      - traefik.http.routers.<SERVICE>-beta.middlewares=cloudflare-ip-whitelist
+      - traefik.http.services.<SERVICE>-beta.loadbalancer.server.port=80
