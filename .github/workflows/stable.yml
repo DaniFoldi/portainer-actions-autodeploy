@@ -27,6 +27,10 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Fetch latest release version
+      id: fetch-latest-release
+      uses: reloc8/action-latest-release-version@1.0.0
+
     - name: Build and push
       id: docker_build
       uses: docker/build-push-action@v2
