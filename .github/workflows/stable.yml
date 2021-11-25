@@ -36,6 +36,6 @@ jobs:
         file: Dockerfile
         target: app
         push: true
-        tags: ghcr.io/<CONTAINER_NAME>:stable
+        tags: ghcr.io/<CONTAINER_NAME>:stable,ghcr.io/<CONTAINER_NAME>:${{ steps.fetch-latest-release.outputs.latest-release }}
         cache-from: type=gha
         cache-to: type=gha,mode=max

@@ -6,7 +6,7 @@ networks:
 
 services:
   <SERVICE>:
-    image: ghcr.io/<CONTAINER_NAME>:stable
+    image: ghcr.io/<CONTAINER_NAME>:{{stable}}
     restart: always
     container_name: <SERVICE>
     environment:
@@ -22,7 +22,7 @@ services:
       - traefik.http.routers.<SERVICE>.middlewares=cloudflare-ip-whitelist
       - traefik.http.services.<SERVICE>.loadbalancer.server.port=80
   <SERVICE>-beta:
-    image: ghcr.io/<CONTAINER_NAME>:latest
+    image: ghcr.io/<CONTAINER_NAME>:{{beta}}
     restart: unless-stopped
     container_name: <SERVICE>-beta
     environment:

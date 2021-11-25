@@ -27,6 +27,10 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Get latest commit hash
+      id: fetch-latest-hash
+      run: echo "::set-output name=latest-hash::$(git rev-parse --short $GITHUB_SHA)"
+
     - name: Build and push
       id: docker_build
       uses: docker/build-push-action@v2
@@ -36,6 +40,6 @@ jobs:
         file: Dockerfile
         target: app
         push: true
-        tags: ghcr.io/<CONTAINER_NAME>:latest
+        tags: ghcr.io/<CONTAINER_NAME>:latest,ghcr.io/<CONTAINER_NAME>:${{ steps.fetch-latest-hash.outputs.latest-hash }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
